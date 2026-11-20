@@ -1,13 +1,15 @@
 ﻿# ==============================================================================
 # Script: publicar_y_actualizar_dgm.ps1
-# Finalidad: Conectar el remoto 'origin' con la URL real de GitHub,
-#            confirmar cambios en la rama 'main' y ejecutar 'git push'.
+# Finalidad: Validar la URL real de GitHub, configurar 'origin', confirmar
+#            cambios en la rama 'main' y ejecutar 'git push -u origin main'.
 # Editor: Bloc de notas (guardar siempre como Codificacion: UTF-8 con BOM).
 # ==============================================================================
 
-# Variables ajustables: carpeta del proyecto, URL real de GitHub y mensaje
+# Variable ajustable: pega aquí la URL real de tu repositorio en GitHub
+$UrlRepositorioReal = "https://github.com/robertodgm26/Pagina-Web-DGM.git"
+
+# Otras variables ajustables
 $RutaProyecto = "C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web"
-$UrlRepositorioReal = "https://github.com/TU_USUARIO/TU_REPOSITORIO.git"
 $MensajeCommit = "Actualizar código web Servicios DGM Puerto Cabello"
 
 if (-not (Test-Path -LiteralPath $RutaProyecto)) {
@@ -17,8 +19,21 @@ if (-not (Test-Path -LiteralPath $RutaProyecto)) {
 
 Set-Location -LiteralPath $RutaProyecto
 
-if ($UrlRepositorioReal -eq "https://github.com/robertodgm26/Pagina-Web-DGM.git" -or [string]::IsNullOrWhiteSpace($UrlRepositorioReal)) {
-  Write-Warning "Reemplaza `$UrlRepositorioReal por la URL real de tu repositorio en GitHub antes de ejecutar."
+$UrlLimpia = ""
+if ($null -ne $UrlRepositorioReal) {
+  $UrlLimpia = $UrlRepositorioReal.Trim()
+}
+
+Write-Host "[Diagnostico] Valor leido en `$UrlRepositorioReal: '$UrlLimpia'"
+
+$esMarcador = (
+  [string]::IsNullOrWhiteSpace($UrlLimpia) -or
+  $UrlLimpia -match "TU_USUARIO" -or
+  $UrlLimpia -match "TU_REPOSITORIO"
+)
+
+if ($esMarcador) {
+  Write-Warning "El script aun detecta el marcador de ejemplo. Abre publicar_y_actualizar_dgm.ps1, pega tu URL real de GitHub y guarda en UTF-8 con BOM."
   exit 1
 }
 
@@ -28,17 +43,15 @@ if (-not (Test-Path -LiteralPath (Join-Path $RutaProyecto ".git"))) {
 
 git branch -M main
 
-# Agrega o actualiza el remoto 'origin' con la URL real
 $remotosActuales = git remote
 if ($remotosActuales -contains "origin") {
-  git remote set-url origin $UrlRepositorioReal
-  Write-Host "[OK] Remoto 'origin' actualizado a: $UrlRepositorioReal"
+  git remote set-url origin $UrlLimpia
+  Write-Host "[OK] Remoto 'origin' actualizado a: $UrlLimpia"
 } else {
-  git remote add origin $UrlRepositorioReal
-  Write-Host "[OK] Remoto 'origin' agregado: $UrlRepositorioReal"
+  git remote add origin $UrlLimpia
+  Write-Host "[OK] Remoto 'origin' agregado: $UrlLimpia"
 }
 
-# Confirma cambios si hay pendientes
 git add .
 $cambiosPendientes = git status --porcelain
 if ($cambiosPendientes) {
@@ -48,10 +61,9 @@ if ($cambiosPendientes) {
   Write-Host "[Info] No hay cambios nuevos pendientes por confirmar."
 }
 
-# Sube la rama principal a GitHub
 Write-Host "[Info] Ejecutando git push -u origin main..."
 git push -u origin main
 
 Write-Host ""
 Write-Host "Siguiente paso en GitHub para desplegar:"
-Write-Host "Abre tu repositorio en GitHub -> Settings -> Pages -> Branch: main -> Folder: / (root) -> Save."
+Write-Host "En tu repositorio de GitHub -> Settings -> Pages -> Branch: main -> Folder: / (root) -> Save."
