@@ -183,7 +183,6 @@
     footer a:hover { color: var(--acento-dorado); }
     .footer-bottom { padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.85rem; color: #94a3b8; }
 
-    /* Botón flotante: fijo en pantalla para acceso rápido en cualquier scroll */
     .whatsapp-flotante {
       position: fixed; bottom: 22px; right: 22px; z-index: 999;
       background-color: var(--verde-whatsapp); color: var(--blanco);
@@ -219,7 +218,7 @@
   <header class="navbar">
     <div class="contenedor navbar-contenido">
       <a href="#inicio" class="logo">
-        <img id="logo-dgm-img" src="LOGODGM.PNG" alt="Logo Servicios DGM Puerto Cabello, C.A." class="logo-img" />
+        <img id="logo-dgm-img" src="LOGODGM.png" alt="Logo Servicios DGM Puerto Cabello, C.A." class="logo-img" />
         <span id="logo-dgm-fallback" class="logo-badge" style="display: none;">DGM</span>
         <span class="logo-nombre">Servicios DGM Puerto Cabello, C.A.</span>
       </a>
@@ -408,7 +407,6 @@
     </div>
   </footer>
 
-  <!-- Botón flotante: permanece fijo en esquina inferior derecha con etiqueta propia -->
   <a href="#" class="whatsapp-flotante js-whatsapp-directo" data-etiqueta="flotante_whatsapp" data-mensaje="Hola Servicios DGM Puerto Cabello, C.A., vengo desde su página web y necesito información.">💬 WhatsApp</a>
 
   <script>
@@ -463,10 +461,12 @@
     }
 
     const RUTAS_LOGO_DGM = [
+      "LOGODGM.png",
+      "./LOGODGM.png",
       "LOGODGM.PNG",
       "./LOGODGM.PNG",
-      "img/LOGODGM.PNG",
-      "./img/LOGODGM.PNG"
+      "img/LOGODGM.png",
+      "./img/LOGODGM.png"
     ];
 
     function generarEnlaceWhatsApp(mensaje) {

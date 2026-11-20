@@ -1,7 +1,8 @@
 ﻿# ==============================================================================
 # Script: crear_proyecto_dgm.ps1
 # Finalidad: Generar index.html y README.txt en la carpeta del proyecto web
-#            con codificacion UTF-8 con BOM, logo DGM y seguimiento.
+#            con codificacion UTF-8 con BOM, logotipo LOGODGM.png y utilidades
+#            de seguimiento en consola.
 # Editor: Bloc de notas (guardar siempre como Codificacion: UTF-8 con BOM).
 # ==============================================================================
 
@@ -203,7 +204,6 @@ $ContenidoHtml = @'
     footer a:hover { color: var(--acento-dorado); }
     .footer-bottom { padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.85rem; color: #94a3b8; }
 
-    /* Botón flotante: fijo en pantalla para acceso rápido en cualquier scroll */
     .whatsapp-flotante {
       position: fixed; bottom: 22px; right: 22px; z-index: 999;
       background-color: var(--verde-whatsapp); color: var(--blanco);
@@ -239,7 +239,7 @@ $ContenidoHtml = @'
   <header class="navbar">
     <div class="contenedor navbar-contenido">
       <a href="#inicio" class="logo">
-        <img id="logo-dgm-img" src="LOGODGM.PNG" alt="Logo Servicios DGM Puerto Cabello, C.A." class="logo-img" />
+        <img id="logo-dgm-img" src="LOGODGM.png" alt="Logo Servicios DGM Puerto Cabello, C.A." class="logo-img" />
         <span id="logo-dgm-fallback" class="logo-badge" style="display: none;">DGM</span>
         <span class="logo-nombre">Servicios DGM Puerto Cabello, C.A.</span>
       </a>
@@ -428,7 +428,6 @@ $ContenidoHtml = @'
     </div>
   </footer>
 
-  <!-- Botón flotante: permanece fijo en esquina inferior derecha con etiqueta propia -->
   <a href="#" class="whatsapp-flotante js-whatsapp-directo" data-etiqueta="flotante_whatsapp" data-mensaje="Hola Servicios DGM Puerto Cabello, C.A., vengo desde su página web y necesito información.">💬 WhatsApp</a>
 
   <script>
@@ -483,10 +482,12 @@ $ContenidoHtml = @'
     }
 
     const RUTAS_LOGO_DGM = [
+      "LOGODGM.png",
+      "./LOGODGM.png",
       "LOGODGM.PNG",
       "./LOGODGM.PNG",
-      "img/LOGODGM.PNG",
-      "./img/LOGODGM.PNG"
+      "img/LOGODGM.png",
+      "./img/LOGODGM.png"
     ];
 
     function generarEnlaceWhatsApp(mensaje) {
@@ -621,7 +622,6 @@ $ContenidoHtml = @'
 </html>
 '@
 
-# Documentación técnica en README.txt
 $ContenidoReadme = @"
 PROYECTO WEB - SERVICIOS DGM PUERTO CABELLO, C.A.
 ================================================
@@ -629,40 +629,12 @@ PROYECTO WEB - SERVICIOS DGM PUERTO CABELLO, C.A.
 Ruta local del proyecto:
 C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web
 
-Archivos clave:
-- index.html      : Landing page completa (HTML5, CSS3, JavaScript, GA4 y seguimiento).
-- LOGODGM.PNG     : Logotipo oficial en la cabecera junto a "Servicios DGM Puerto Cabello, C.A.".
-- README.txt      : Guía de referencia para mantenimiento y pruebas del código.
+Archivo de logotipo en repositorio:
+LOGODGM.png en la raiz del repositorio.
 
-Diferencia y utilidad del botón flotante de WhatsApp:
-- Diferencia visual/CSS : Usa la clase .whatsapp-flotante con position: fixed en la esquina
-  inferior derecha (bottom: 22px; right: 22px; z-index: 999), a diferencia de los demás
-  botones de WhatsApp que van integrados dentro de las secciones al hacer scroll.
-- Diferencia en datos  : Comparte la clase .js-whatsapp-directo para recibir el enlace y el
-  evento de clic, pero lleva data-etiqueta="flotante_whatsapp" para distinguir en el
-  seguimiento cuándo el usuario abrió WhatsApp desde el botón flotante.
-- Utilidad           : Permite iniciar contacto rápido en cualquier momento sin tener que
-  volver arriba al inicio ni bajar hasta la sección de cotización.
-
-Comandos de ejemplo para copiar y pegar en la consola (F12):
-- document.querySelector(".whatsapp-flotante").click()
-  Descripción: Simula un clic específicamente en el botón flotante de WhatsApp.
-
+Comandos de consola (F12):
 - verHistorialSeguimiento()
-  Descripción: Muestra en tabla todos los eventos registrados en la sesión.
-
 - limpiarHistorialSeguimiento()
-  Descripción: Vacía el historial de eventos para iniciar una prueba limpia.
-
-Cómo conectar Google Analytics 4 (gratuito):
-- En index.html, cambia ID_MEDICION_GA4 = "G-XXXXXXXXXX" por tu ID real ("G-...").
-
-Consejo para editar con Bloc de notas:
-Guarda siempre con Archivo -> Guardar como... -> Codificación: UTF-8 con BOM.
-
-Cómo regenerar los archivos desde PowerShell:
-cd C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web
-.\crear_proyecto_dgm.ps1
 "@
 
 [System.IO.File]::WriteAllText($ArchivoIndex, $ContenidoHtml, $CodificacionUtf8)

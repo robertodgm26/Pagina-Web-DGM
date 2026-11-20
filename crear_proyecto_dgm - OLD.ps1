@@ -1,11 +1,11 @@
 ﻿# ==============================================================================
 # Script: crear_proyecto_dgm.ps1
 # Finalidad: Generar index.html y README.txt en la carpeta del proyecto web
-#            con codificacion UTF-8, logo DGM, seguimiento y comandos de prueba.
-# Editor: Bloc de notas (guardar como Codificacion: UTF-8).
+#            con codificacion UTF-8 con BOM, logo DGM y seguimiento.
+# Editor: Bloc de notas (guardar siempre como Codificacion: UTF-8 con BOM).
 # ==============================================================================
 
-# Variable ajustable: carpeta del proyecto web
+# Parámetro ajustable: ruta de la carpeta del proyecto web
 $RutaProyecto = "C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web"
 $ArchivoIndex = Join-Path $RutaProyecto "index.html"
 $ArchivoReadme = Join-Path $RutaProyecto "README.txt"
@@ -13,7 +13,7 @@ $ArchivoReadme = Join-Path $RutaProyecto "README.txt"
 # Asegura que exista la carpeta del proyecto
 New-Item -ItemType Directory -Path $RutaProyecto -Force | Out-Null
 
-# Codificacion UTF-8 con BOM para compatibilidad con navegadores y Windows
+# Codificación UTF-8 con BOM para conservar tildes y ñ en Windows y navegadores
 $CodificacionUtf8 = [System.Text.UTF8Encoding]::new($true)
 
 # Contenido completo de index.html (HTML5 + CSS3 + JavaScript + GA4 + Seguimiento)
@@ -203,6 +203,7 @@ $ContenidoHtml = @'
     footer a:hover { color: var(--acento-dorado); }
     .footer-bottom { padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.85rem; color: #94a3b8; }
 
+    /* Botón flotante: fijo en pantalla para acceso rápido en cualquier scroll */
     .whatsapp-flotante {
       position: fixed; bottom: 22px; right: 22px; z-index: 999;
       background-color: var(--verde-whatsapp); color: var(--blanco);
@@ -427,6 +428,7 @@ $ContenidoHtml = @'
     </div>
   </footer>
 
+  <!-- Botón flotante: permanece fijo en esquina inferior derecha con etiqueta propia -->
   <a href="#" class="whatsapp-flotante js-whatsapp-directo" data-etiqueta="flotante_whatsapp" data-mensaje="Hola Servicios DGM Puerto Cabello, C.A., vengo desde su página web y necesito información.">💬 WhatsApp</a>
 
   <script>
@@ -473,6 +475,11 @@ $ContenidoHtml = @'
     function verHistorialSeguimiento() {
       console.table(historialEventosSeguimiento);
       return historialEventosSeguimiento;
+    }
+
+    function limpiarHistorialSeguimiento() {
+      historialEventosSeguimiento.length = 0;
+      console.log("[Seguimiento DGM] Historial limpiado.");
     }
 
     const RUTAS_LOGO_DGM = [
@@ -614,7 +621,7 @@ $ContenidoHtml = @'
 </html>
 '@
 
-# Documentacion tecnica en README.txt con comandos de consola y descripcion
+# Documentación técnica en README.txt
 $ContenidoReadme = @"
 PROYECTO WEB - SERVICIOS DGM PUERTO CABELLO, C.A.
 ================================================
@@ -625,39 +632,35 @@ C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web
 Archivos clave:
 - index.html      : Landing page completa (HTML5, CSS3, JavaScript, GA4 y seguimiento).
 - LOGODGM.PNG     : Logotipo oficial en la cabecera junto a "Servicios DGM Puerto Cabello, C.A.".
-- README.txt      : Guia de referencia para mantenimiento y pruebas del codigo.
+- README.txt      : Guía de referencia para mantenimiento y pruebas del código.
 
-Como abrir la consola para probar eventos:
-1. Abre index.html en tu navegador.
-2. Presiona F12 y entra en la pestana "Console".
-3. Tambien puedes hacer clic en los botones de WhatsApp, llamada o Instagram en la pagina
-   y luego ejecutar los comandos de abajo.
+Diferencia y utilidad del botón flotante de WhatsApp:
+- Diferencia visual/CSS : Usa la clase .whatsapp-flotante con position: fixed en la esquina
+  inferior derecha (bottom: 22px; right: 22px; z-index: 999), a diferencia de los demás
+  botones de WhatsApp que van integrados dentro de las secciones al hacer scroll.
+- Diferencia en datos  : Comparte la clase .js-whatsapp-directo para recibir el enlace y el
+  evento de clic, pero lleva data-etiqueta="flotante_whatsapp" para distinguir en el
+  seguimiento cuándo el usuario abrió WhatsApp desde el botón flotante.
+- Utilidad           : Permite iniciar contacto rápido en cualquier momento sin tener que
+  volver arriba al inicio ni bajar hasta la sección de cotización.
 
 Comandos de ejemplo para copiar y pegar en la consola (F12):
+- document.querySelector(".whatsapp-flotante").click()
+  Descripción: Simula un clic específicamente en el botón flotante de WhatsApp.
+
 - verHistorialSeguimiento()
-  Descripcion: Muestra en formato de tabla todos los eventos registrados en la sesion
-  actual (clics en WhatsApp, llamada, Instagram o envios del formulario).
+  Descripción: Muestra en tabla todos los eventos registrados en la sesión.
 
-- registrarEventoSeguimiento("contacto", "clic_whatsapp", "prueba_consola")
-  Descripcion: Registra manualmente un evento de prueba de clic en WhatsApp para
-  verificar que la funcion guarda el evento y lo imprime en consola.
+- limpiarHistorialSeguimiento()
+  Descripción: Vacía el historial de eventos para iniciar una prueba limpia.
 
-- registrarEventoSeguimiento("contacto", "clic_llamada", "prueba_llamada")
-  Descripcion: Registra manualmente un evento de prueba de clic en llamada telefonica.
-
-- registrarEventoSeguimiento("redes_sociales", "clic_instagram", "https://www.instagram.com/serviciosdgmpc.ca/?hl=es")
-  Descripcion: Registra manualmente un evento de prueba de clic en el enlace de Instagram.
-
-- historialEventosSeguimiento.length
-  Descripcion: Devuelve en consola la cantidad total de eventos acumulados en la sesion.
-
-Como conectar Google Analytics 4 (gratuito):
+Cómo conectar Google Analytics 4 (gratuito):
 - En index.html, cambia ID_MEDICION_GA4 = "G-XXXXXXXXXX" por tu ID real ("G-...").
 
 Consejo para editar con Bloc de notas:
-Guarda siempre con Archivo -> Guardar como... -> Codificacion: UTF-8.
+Guarda siempre con Archivo -> Guardar como... -> Codificación: UTF-8 con BOM.
 
-Como regenerar los archivos desde PowerShell:
+Cómo regenerar los archivos desde PowerShell:
 cd C:\Users\RBENITEZ\OneDrive\Documentos\Proyectos\Pagina_Web
 .\crear_proyecto_dgm.ps1
 "@
